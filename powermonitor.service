@@ -1,0 +1,15 @@
+[Unit]
+Description=Lantern Power Monitor (32-bit Python)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/powermonitor
+ExecStart=/usr/bin/python3 /opt/powermonitor/monitor.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

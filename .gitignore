@@ -1,0 +1,14 @@
+# Runtime config contains sensitive auth tokens — never commit
+config.json
+
+# Logs
+log.txt
+*.log
+
+# Cache directory
+cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
