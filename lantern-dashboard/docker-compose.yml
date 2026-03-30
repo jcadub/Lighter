@@ -1,0 +1,12 @@
+services:
+  lantern-dashboard:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    networks:
+      - lantern_default
+
+networks:
+  lantern_default:
+    external: true
