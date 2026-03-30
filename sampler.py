@@ -159,7 +159,7 @@ def calibrate_voltage(adc, current_cal, frequency=60, duration_s=2.0):
     raw_rms = math.sqrt(v_rms_sum / count)
     old_vrms = current_cal * raw_rms
 
-    if old_vrms < 20:
+    if old_vrms < 1:
         print("ERROR: Could not get a valid voltage read. Check AC/AC transformer connection.")
         return None, None
 

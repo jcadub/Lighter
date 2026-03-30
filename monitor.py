@@ -182,7 +182,7 @@ def build_breaker_list(server_breakers, hub):
             'panel':           b.get('panel', 1),
             'space':           b.get('space', 0),
             'port_cal':        port_cal,
-            'breaker_cal':     float(b.get('calibration_factor') or 1.0),
+            'breaker_cal':     float(b.get('calibration_factor') or (b.get('size_amps', 20) / 380.0)),
             'low_pass_filter': float(b.get('low_pass_filter') or 0.0),
             'polarity':        b.get('polarity') or 'NORMAL',
             'double_power':    bool(b.get('double_power', False)),
@@ -392,6 +392,15 @@ def main():
             log.warning("Calibration failed — continuing with existing factor")
 
     breakers = build_breaker_list(server_breakers, hub)
+    # Optional per-port overrides from config.json — useful for fine-tuning individual
+    # circuit calibration (calibration_factor, double_power) without touching MongoDB.
+    # Example: "port_overrides": {"3": {"calibration_factor": 0.18, "double_power": true}}
+    for b in breakers:
+        override = (cfg.get("port_overrides") or {}).get(str(b["port"]))
+        if override:
+            if "calibration_factor" in override: b["breaker_cal"] = float(override["calibration_factor"])
+            if "double_power" in override: b["double_power"] = bool(override["double_power"])
+            log.info(f"Port override applied: port={b['port']} cal={b['breaker_cal']} double={b['double_power']}")
     log.info(f"Monitoring ports: {[b['port'] for b in breakers]}")
 
     # Per-minute tracking
